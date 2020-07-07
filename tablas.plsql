@@ -19,17 +19,17 @@ primary key (id_rol)
 
 Create table usuario(
 ID_usuario number(10), 
-nombre_usuario varchar(15),
+nombre_usuario varchar(20),
 correo_institucional varchar(25),
 nombre_apellido varchar(25),
 cantidad_horas_completadas number(15),
-estado_de_horas varchar(15),
+estado_de_horas varchar(20),
 ID_tipo_de_usuario number(15), 
 celular number(15),
 id_rol number(15), 
 cedula number(15),
 estado_usuarios varchar(10),
-carrera varchar(10),
+carrera varchar(35),
 Constraint pk_ID_usuario
 Primary key (ID_usuario),
 constraint fk_ID_tipo_de_usuario 
@@ -43,7 +43,7 @@ references Roles(id_rol)
 create table proyectos(
 ID_proyectos number(15),
 ID_usuario number(10),
-nombre_proyecto varchar(20),
+nombre_proyecto varchar(35),
 duracion_proyecto number(15),
 prioridad varchar(20),
 fecha_inicio date,
