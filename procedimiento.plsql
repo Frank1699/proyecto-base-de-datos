@@ -194,13 +194,28 @@ DBMS_output.put_line(v_mensaje);
 end;
 /
 /*-------------------------------------------*/
-create or replace procedure crear_actividad (    
-)
-IS
-BEGIN 
+create sequence secuencia_actividades 
+start with 1
+increment by 1 
+maxvalue 99999
+minvalue 1;
 
-END
+create or replace procedure crear_actividad(
+    p_id_proyectos actividades.id_proyectos%type,
+    p_duracion_activa  actividades.duracion_activa%type,
+    p_fecha_actividad actividades.fecha_actividad%type,
+    p_mensaje out varchar2
+) as 
+begin 
+p_mensaje:='La actividad a sido creada corectamente';
+
+insert into actividades (id_actividad, id_proyectos, duración_activa, fecha_actividad)
+values (secuencia_actividades.nextval, p_id_proyectos, p_duracion_activa, to date(p_fecha_actividad));
+	exception
+		when dup_val_on_index then
+			p_mensaje:='Esta actividad ya existe ya existe en la base de datos'; 
+		when others then
+			p_mensaje:='Error desconocido, no creo el registro';
+commit;
+END crear_actividades;
 /
-
-
-create or replace trigger Tproyectos
