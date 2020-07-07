@@ -119,12 +119,4 @@ v_duracion_proyecto number(15):=240;
 prioridad varchar(20):='Alta';
 fecha_inicio date:='2020/05/15 8:30:00';
 
-
-
-
-
 create or replace procedure ()
-
-
-
-
