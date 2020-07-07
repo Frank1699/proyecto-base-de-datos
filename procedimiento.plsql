@@ -9,12 +9,16 @@ INSERT INTO roles(ID_rol,Tipo_de_rol)
 
 /*-----------------------------------*/
 
+
+
 INSERT INTO tipo_usuario(ID_tipo_de_usuario,tipo_de_usuario)
         (1,'Estudiante');
 INSERT INTO tipo_usuario(ID_tipo_de_usuario,tipo_de_usuario)
         (2,'Profesor');
 INSERT INTO tipo_usuario(ID_tipo_de_usuario,tipo_de_usuario)
         (3,'Externo');
+
+
 
 /*-----------------------------------*/
 
@@ -25,17 +29,19 @@ maxvalue 99999
 minvalue 1;
 /*-----------------------------------*/
 
+
+
 create or replace procedure inser_usuarios(
-p_nombre_usuario  nombre_usuario.usuario%type;
-p_correo          correo_institucional.usuario%type;
-p_nombre_apellido nombre_apellido.usuario%type; 
-p_horas_completadas cantidad_horas_completadas.usuario%type; 
-p_id_tipo_usuario ID_tipo_de_usuario.usuario%type;
-p_celular         celular.usuario%type;
-p_id_rol          id_rol.usuario%type;
-p_cedula          cedula.usuario%type;
-p_estado_usuario  estado_usuarios.usuario%type;
-p_carrera         carrera.usuario%type;
+p_nombre_usuario    in nombre_usuario.usuario%type,
+p_correo            in correo_institucional.usuario%type,
+p_nombre_apellido   in nombre_apellido.usuario%type,
+p_horas_completadas in cantidad_horas_completadas.usuario%type, 
+p_id_tipo_usuario   in ID_tipo_de_usuario.usuario%type,
+p_celular           in celular.usuario%type,
+p_id_rol            in id_rol.usuario%type,
+p_cedula            in cedula.usuario%type,
+p_estado_usuario    in estado_usuarios.usuario%type,
+p_carrera           in carrera.usuario%type,
 P_mensaje         out varchar2
 ) as
 v_estado_horas estado_de_horas.usuario%type,
@@ -97,13 +103,45 @@ DBMS_output.put_line(v_mensaje);
 end;
 /
 
+
 /*---------------------------------------------------*/
+CREATE SEQUENCE secuencia_proyectos
+start with 1
+increment by 1
+maxvalue 99999
+minvalue 1;
 
-create or replace procedure proponer_proyectos(
-
+/*---------------------------------------------------*/
+create or replace procedure crear_proyectos(
+p_id_usuario in proyectos.ID_usuario%type,
+p_nombre_proyecto in proyectos.nombre_proyecto%type,
+p_duracion_proyecto in proyectos.duracion_proyecto%type,
+p_prioridad in proyectos.prioridad%type,
+p_fecha_inicio in proyectos.fecha_inicio%type,
+p_fecha_finalizacion in proyectos.fecha_finalizacion%type,
+p_costo_proyecto in proyectos.costo_proyecto%type
 )as
+v_estado_proyecto:='Inactivo';
 begin
-
+insert into proyectos(id_proyecto,
+                      id_usuario,
+                      nombre_proyecto,
+                      duracion_proyecto,
+                      descripcion_proyectos,
+                      prioridad,
+                      fecha_inicio,
+                      fecha_finalizacion,
+                      costo_proyecto,
+                      estado_proyecto) 
+                values(secuencia_proyectos.nextval,
+                        p_id_usuario,
+                        p_nombre_proyecto,
+                        p_duracion_proyecto,
+                        p_prioridad,
+                        p_fecha_inicio,
+                        p_fecha_finalizacion,
+                        p_costo_proyecto,
+                        v_estado_proyecto);
 EXCEPTION
     WHEN dup_val_on_index THEN
         p_mensaje:='Este valor ya existe';
@@ -111,12 +149,58 @@ EXCEPTION
         p_mensaje:='No se ha creado el registro...';
 end proponer_proyectos;
 /
+
 SET serveroutput ON
 declare
 v_id_usuario number(15):=1;
 v_nombre_proyecto varchar(35):='Limpieza de Playa';
 v_duracion_proyecto number(15):=240;  
-prioridad varchar(20):='Alta';
-fecha_inicio date:='2020/05/15 8:30:00';
+v_prioridad varchar(20):='Alta';
+v_fecha_inicio to_date:='2020/05/15 8:30:00';
+v_fecha_finalizacion to_date:='2020/06/15 8:30:00'; /* agregar el formato */
+v_costo_proyecto number(15):=2000;
+v_mensaje varchar2(50);
+begin 
+crear_proyectos(v_id_usuario,v_nombre_proyecto,v_duracion_proyecto,v_prioridad,v_fecha_inicio,v_fecha_finalizacion,v_costo_proyecto);
+DBMS_output.put_line(v_mensaje);
+end;
+/
+/*---------------------------------------------------*/
+create or replace procedure CambioRol(
+p_nombre_usuario  in nombre_usuario.usuario%type,
+p_id_rol          in id_rol.usuario%type,
+P_mensaje         out varchar2)
+as
+v_id ID_usuario.usuario%type;
+begin
+select ID_usuario into v_id from usuario where nombre_usuario=p_nombre_usuario;
+update usuario 
+set id_rol = p_id_rol;
+where ID_usuario=v_id;
 
-create or replace procedure ()
+EXCEPTION
+    WHEN others THEN
+        p_mensaje:='No se ha creado el registro...';
+end CambioRol;
+/
+
+SET serveroutput ON
+declare
+v_nombre_usuario varchar2(35):='Kadir507';
+v_Nid_rol        number(15):=4;
+
+inser_usuarios(v_nombre_usuario,);
+DBMS_output.put_line(v_mensaje);
+end;
+/
+/*-------------------------------------------*/
+create or replace procedure crear_actividad (    
+)
+IS
+BEGIN 
+
+END
+/
+
+
+create or replace trigger Tproyectos

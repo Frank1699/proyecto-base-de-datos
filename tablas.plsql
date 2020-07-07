@@ -63,11 +63,11 @@ create table Propone(
   nombre_apellido varchar(25),
   ID_proyectos number(15),
   Constraint pk_id_usuario_rol
-Primary key (ID_usuario,Id_proyecto)
+Primary key (ID_usuario,ID_proyectos)
 constraint fk_usuario_rol
 foreign key(ID_rol)
 references Roles (ID_rol)
-  
+
 );
 
 create table actividades(
